@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app:
+    image: node:lts
+    container_name: app
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URL=mongodb://mongodb
+    command: "sleep infinity"
+    volumes:
+      - .:/var/www
+  mongodb:
+    image: mongo:latest
+    volumes:
+        - ./volumes/mongo:/data/db
+    container_name: mongodb
+    ports:
+      - "27017:27017"

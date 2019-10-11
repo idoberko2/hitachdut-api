@@ -1,0 +1,42 @@
+const { getGamesData } = require('../src/scrape');
+const {
+    cleanup,
+    getFirstIncompleteRound,
+    insertRound,
+} = require('../src/store');
+
+const { LEAGUE: league, SEASON: season } = process.env;
+
+if (league == null || season == null) {
+    throw new Error('missing required parameters');
+}
+
+async function start() {
+    const firstIncompleteRound = await getFirstIncompleteRound();
+    let currentRound = firstIncompleteRound ? firstIncompleteRound.round : 1;
+    let currentRoundGames = null;
+    do {
+        console.info(`Scraping round ${currentRound}...`);
+        currentRoundGames = await getGamesData(league, season, currentRound);
+        if (currentRoundGames !== null) {
+            console.info(`Successfully scraped ${currentRound}`);
+            await insertRound(league, season, currentRound, currentRoundGames);
+            console.info(`Successfully stored ${currentRound}`);
+            ++currentRound;
+        } else {
+            console.info('No such round!');
+        }
+    } while (currentRoundGames !== null);
+}
+
+async function terminate() {
+    await cleanup();
+    process.exit(0);
+}
+
+process.on('SIGTERM', terminate);
+process.on('SIGINT', terminate);
+
+start()
+    .then(() => console.log('Done'))
+    .catch(err => console.error(err));
