@@ -9,6 +9,15 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/scrape.js"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach",
+            "address": "localhost",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/var/www"
         }
     ]
 }

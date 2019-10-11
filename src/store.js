@@ -79,7 +79,6 @@ async function insertRound(league, season, round, games) {
         (prev, cur) => (cur.date < prev ? cur.date : prev),
         new Date('2040-01-01 00:00:00')
     );
-    console.log({ minDate });
     const isCompleted = !games.some(game => game.score == null);
 
     const db = await getDb();
