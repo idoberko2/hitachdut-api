@@ -5,7 +5,7 @@
  */
 
 require('dotenv').config();
-const { cleanup } = require('../src/store');
+const terminate = require('../src/terminate');
 
 const app = require('../src/app');
 const http = require('http');
@@ -86,11 +86,6 @@ function onListening() {
     const bind =
         typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     console.debug('Listening on ' + bind);
-}
-
-async function terminate() {
-    await cleanup();
-    process.exit(0);
 }
 
 process.on('SIGTERM', terminate);

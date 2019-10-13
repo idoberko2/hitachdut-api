@@ -1,0 +1,9 @@
+const terminate = require('../src/terminate');
+const init = require('../src/store/init');
+
+init()
+    .then(terminate)
+    .catch(async err => {
+        console.error(err);
+        await terminate(1);
+    });

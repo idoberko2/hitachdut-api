@@ -1,9 +1,6 @@
 const { getGamesData } = require('../src/scrape');
-const {
-    cleanup,
-    getFirstIncompleteRound,
-    insertRound,
-} = require('../src/store');
+const { getFirstIncompleteRound, insertRound } = require('../src/store');
+const terminate = require('../src/terminate');
 
 require('dotenv').config();
 
@@ -36,15 +33,13 @@ async function start() {
     } while (currentRoundGames !== null);
 }
 
-async function terminate() {
-    await cleanup();
-    process.exit(0);
-}
-
 process.on('SIGTERM', terminate);
 process.on('SIGINT', terminate);
 
 start()
-    .then(terminate)
     .then(() => console.log('Done'))
-    .catch(err => console.error(err));
+    .then(terminate)
+    .catch(async err => {
+        console.error(err);
+        await terminate(1);
+    });
