@@ -7,14 +7,26 @@ function trimHomeTeam(rawTeam) {
 }
 
 function strToDate(rawDate, rawTime) {
+    if (rawDate == null) {
+        return null;
+    }
+
     const [day, month, year] = rawDate.split('/');
-    const [hour, minutes] = rawTime.split(':');
     const dateToReturn = new Date();
     dateToReturn.setDate(day);
     dateToReturn.setMonth(month - 1);
     dateToReturn.setFullYear(year);
-    dateToReturn.setHours(hour);
-    dateToReturn.setMinutes(minutes);
+
+    if (rawTime != null && /^\d\d\:\d\d$/.test(rawTime)) {
+        const [hour, minutes] = rawTime.split(':');
+
+        dateToReturn.setHours(hour);
+        dateToReturn.setMinutes(minutes);
+    } else {
+        dateToReturn.setHours(0);
+        dateToReturn.setMinutes(0);
+    }
+
     dateToReturn.setSeconds(0, 0);
 
     return dateToReturn;
@@ -51,8 +63,8 @@ function gamesFromHtml(html) {
     const games = gamesTable.childNodes.slice(1);
     return games.map(game => {
         const date = strToDate(
-            game.childNodes[0].lastChild.data,
-            game.childNodes[3].lastChild.data
+            game.childNodes[0].lastChild.data.trim(),
+            game.childNodes[3].lastChild.data.trim()
         );
         const homeTeam = trimHomeTeam(
             game.childNodes[1].childNodes[1].firstChild.data
