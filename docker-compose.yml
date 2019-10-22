@@ -22,3 +22,13 @@ services:
         container_name: mongodb
         ports:
             - '27017:27017'
+    bot:
+        image: golang
+        volumes:
+            - ../telegram-bot:/go/src/github.com/idoberko2/telegram-bot
+        container_name: bot
+        depends_on:
+            - app
+        links:
+            - app
+        command: 'bash -c "cd /go/src/github.com/idoberko2/telegram-bot && go mod download && go install && /go/bin/telegram-bot"'
