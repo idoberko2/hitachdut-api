@@ -5,10 +5,10 @@ let db = null;
 
 async function getClient() {
     if (client === null) {
-        client = await MongoClient.connect(
-            `${process.env.MONGO_URL}/hitachdut`,
-            { useNewUrlParser: true, useUnifiedTopology: true }
-        );
+        client = await MongoClient.connect(`${process.env.MONGO_URL}`, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
     }
 
     return client;

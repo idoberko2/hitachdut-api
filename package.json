@@ -8,7 +8,10 @@
     "license": "MIT",
     "private": false,
     "scripts": {
-        "web": "node_modules/.bin/nodemon --inspect=0.0.0.0:9229 bin/www"
+        "start:dev": "node_modules/.bin/nodemon --inspect=0.0.0.0:9229 bin/www",
+        "start": "node bin/www",
+        "init": "node bin/init",
+        "worker": "node bin/worker"
     },
     "dependencies": {
         "axios": "^0.19.0",

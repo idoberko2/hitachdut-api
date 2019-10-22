@@ -8,7 +8,7 @@ services:
         depends_on:
             - mongodb
         environment:
-            - MONGO_URL=mongodb://mongodb
+            - MONGO_URL=mongodb://mongodb/hitachdut
         command: 'bash -c "cd /var/www/ && yarn run web"'
         volumes:
             - .:/var/www
