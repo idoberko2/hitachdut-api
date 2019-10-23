@@ -11,7 +11,8 @@
         "start:dev": "node_modules/.bin/nodemon --inspect=0.0.0.0:9229 bin/www",
         "start": "node bin/www",
         "init": "node bin/init",
-        "worker": "node bin/worker"
+        "worker": "node bin/worker",
+        "scheduler": "node bin/scheduler"
     },
     "dependencies": {
         "amqplib": "^0.5.5",
