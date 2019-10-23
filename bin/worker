@@ -1,16 +1,42 @@
+const amqp = require('amqplib');
 const { getGamesData } = require('../src/scrape');
 const { getFirstIncompleteRound, insertRound } = require('../src/store');
 const terminate = require('../src/terminate');
 
 require('dotenv').config();
 
-const { LEAGUE: league, SEASON: season } = process.env;
+const { RABBITMQ_URL, QUEUE_NAME } = process.env;
 
-if (league == null || season == null) {
-    throw new Error('missing required parameters');
+function handleTerminate(closeMqConnection) {
+    closeMqConnection();
+    terminate();
 }
 
-async function start() {
+async function handleMessage(ch, msg) {
+    try {
+        const body = JSON.parse(msg.content);
+        console.info('Received message with content: ', body);
+
+        switch (body.cmd) {
+            case 'scrape': {
+                await scrape(body);
+                break;
+            }
+            default: {
+                throw Error(
+                    'Received unknown command: ' + JSON.stringify(body)
+                );
+            }
+        }
+
+        ch.ack(msg);
+    } catch (err) {
+        console.error(err);
+        ch.reject(msg);
+    }
+}
+
+async function scrape({ league, season }) {
     const firstIncompleteRound = await getFirstIncompleteRound();
     let currentRound = firstIncompleteRound ? firstIncompleteRound.round : 1;
     let currentRoundGames = null;
@@ -33,13 +59,20 @@ async function start() {
     } while (currentRoundGames !== null);
 }
 
-process.on('SIGTERM', terminate);
-process.on('SIGINT', terminate);
+async function doWork() {
+    const conn = await amqp.connect(RABBITMQ_URL);
+    const terminate = handleTerminate.bind(null, conn.close.bind(conn));
 
-start()
-    .then(() => console.log('Done'))
-    .then(terminate)
-    .catch(async err => {
-        console.error(err);
-        await terminate(1);
-    });
+    process.on('SIGTERM', terminate);
+    process.on('SIGINT', terminate);
+
+    const ch = await conn.createChannel();
+    await ch.assertQueue(QUEUE_NAME, { durable: true });
+    await ch.prefetch(1);
+    await ch.consume(QUEUE_NAME, handleMessage.bind(null, ch));
+}
+
+doWork().catch(async err => {
+    console.error(err);
+    await terminate(1);
+});

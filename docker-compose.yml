@@ -9,12 +9,17 @@ services:
             - mongodb
         environment:
             - MONGO_URL=mongodb://mongodb/hitachdut
-        command: 'bash -c "cd /var/www/ && yarn run web"'
+        command: 'bash -c "cd /var/www/ && yarn run start:dev"'
         volumes:
             - .:/var/www
         ports:
             - '3003:3003'
             - '9229:9229'
+    rabbitmq:
+        image: rabbitmq
+        container_name: rabbitmq
+        ports:
+            - '5672:5672'
     mongodb:
         image: mongo:latest
         volumes:

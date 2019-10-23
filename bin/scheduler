@@ -1,0 +1,45 @@
+const amqp = require('amqplib');
+
+require('dotenv').config();
+
+const {
+    RABBITMQ_URL,
+    QUEUE_NAME,
+    LEAGUE: league,
+    SEASON: season,
+} = process.env;
+
+async function start(mqUrl) {
+    const conn = await amqp.connect(mqUrl);
+
+    try {
+        const msg = JSON.stringify({
+            cmd: 'scrape',
+            league,
+            season,
+        });
+        const ch = await conn.createChannel();
+        await ch.assertQueue(QUEUE_NAME, { durable: true });
+
+        ch.sendToQueue(QUEUE_NAME, Buffer.from(msg), {
+            deliveryMode: true,
+        });
+        await ch.close();
+    } catch (error) {
+        conn.close();
+        throw error;
+    }
+    conn.close();
+}
+
+if (RABBITMQ_URL == null || QUEUE_NAME == null) {
+    throw Error('Missing RabbitMQ info');
+}
+
+if (league == null || season == null) {
+    throw new Error('missing required parameters');
+}
+
+start(RABBITMQ_URL)
+    .then(() => console.log('Posted message successfully'))
+    .catch(console.error);

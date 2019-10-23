@@ -14,6 +14,7 @@
         "worker": "node bin/worker"
     },
     "dependencies": {
+        "amqplib": "^0.5.5",
         "axios": "^0.19.0",
         "bluebird": "^3.7.0",
         "cheerio": "^1.0.0-rc.3",
