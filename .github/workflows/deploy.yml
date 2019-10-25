@@ -12,8 +12,8 @@ jobs:
         steps:
             - id: deploy
               name: Deploy to dokku
-              uses: idoberko2/dokku-deploy-github-action@master
+              uses: idoberko2/dokku-deploy-github-action@leaner-Dockerfile
               with:
                   ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  dokku-host: ${{ secrets.DOKKU_HOST }}
-                  app-name: hitachdut-api
+                  dokku-host: 'idoberko2.com'
+                  app-name: 'hitachdut-api'
