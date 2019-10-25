@@ -14,4 +14,6 @@ jobs:
               name: Deploy to dokku
               uses: idoberko2/dokku-deploy-github-action@master
               with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  dokku-host: ${{ secrets.DOKKU_HOST }}
                   app-name: hitachdut-api
