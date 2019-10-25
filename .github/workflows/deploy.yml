@@ -1,0 +1,18 @@
+name: Deploy dokku
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - id: deploy
+        name: Deploy to dokku
+        uses: idoberko2/dokku-deploy-github-action
+        with:
+          app-name: hitachdut-api
+    
