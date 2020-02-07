@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 const parser = require('xml2js').Parser();
+const moment = require('moment-timezone');
 
 function trimHomeTeam(rawTeam) {
     return rawTeam.replace(/\s+\-\s+$/, '');
@@ -11,25 +12,29 @@ function strToDate(rawDate, rawTime) {
         return null;
     }
 
+    // build date without timezone
     const [day, month, year] = rawDate.split('/');
-    const dateToReturn = new Date();
-    dateToReturn.setDate(day);
-    dateToReturn.setMonth(month - 1);
-    dateToReturn.setFullYear(year);
+    const dateNoTz = new Date();
+    dateNoTz.setDate(day);
+    dateNoTz.setMonth(month - 1);
+    dateNoTz.setFullYear(year);
 
     if (rawTime != null && /^\d\d\:\d\d$/.test(rawTime)) {
         const [hour, minutes] = rawTime.split(':');
 
-        dateToReturn.setHours(hour);
-        dateToReturn.setMinutes(minutes);
+        dateNoTz.setHours(hour);
+        dateNoTz.setMinutes(minutes);
     } else {
-        dateToReturn.setHours(0);
-        dateToReturn.setMinutes(0);
+        dateNoTz.setHours(0);
+        dateNoTz.setMinutes(0);
     }
 
-    dateToReturn.setSeconds(0, 0);
+    dateNoTz.setSeconds(0, 0);
 
-    return dateToReturn;
+    // setting correct timezone
+    dateToReturn = moment.tz(dateNoTz, 'Asia/Jerusalem');
+
+    return new Date(dateToReturn.format());
 }
 
 async function getTables(league_id, season_id, round_id) {

@@ -41,7 +41,7 @@ describe('scrape', () => {
         expect(currentRoundGames).toEqual(
             expect.arrayContaining([
                 {
-                    date: new Date('2019-10-11T16:00:00'),
+                    date: new Date('2019-10-11T13:00:00Z'),
                     homeTeam: 'הפועל ניר רמה"ש',
                     guestTeam: 'הפועל קטמון י-ם',
                     stadium: 'רמת השרון איצטדיון טוטו ע"ש גרונדמן',
