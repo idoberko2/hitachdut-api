@@ -57,5 +57,9 @@
             "eslint --fix",
             "git add"
         ]
+    },
+    "engines": {
+      "node": "12.x",
+      "yarn": "1.x"
     }
 }
