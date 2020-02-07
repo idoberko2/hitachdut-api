@@ -12,7 +12,8 @@
         "start": "node bin/www",
         "init": "node bin/init",
         "worker": "node bin/worker",
-        "scheduler": "node bin/scheduler"
+        "scheduler": "node bin/scheduler",
+        "test": "jest"
     },
     "dependencies": {
         "amqplib": "^0.5.5",
@@ -32,6 +33,7 @@
         "xml2js": "^0.4.22"
     },
     "devDependencies": {
+        "axios-mock-adapter": "^1.17.0",
         "eslint": "^6.5.1",
         "eslint-config-prettier": "^6.4.0",
         "eslint-config-standard": "^14.1.0",
@@ -40,7 +42,9 @@
         "eslint-plugin-promise": "^4.2.1",
         "eslint-plugin-standard": "^4.0.1",
         "husky": ">=1",
+        "jest": "^25.1.0",
         "lint-staged": ">=8",
+        "mongodb-memory-server": "^6.2.4",
         "prettier": "^1.18.2"
     },
     "husky": {
