@@ -12,29 +12,22 @@ function strToDate(rawDate, rawTime) {
         return null;
     }
 
-    // build date without timezone
-    const [day, month, year] = rawDate.split('/');
-    const dateNoTz = new Date();
-    dateNoTz.setDate(day);
-    dateNoTz.setMonth(month - 1);
-    dateNoTz.setFullYear(year);
+    const date = rawDate
+        .split('/')
+        .reverse() // year, month, date
+        .map(s => Number(s));
+    date[1] -= 1; // month should be 0-11
 
-    if (rawTime != null && /^\d\d\:\d\d$/.test(rawTime)) {
-        const [hour, minutes] = rawTime.split(':');
+    const safeTime =
+        rawTime != null && /^\d\d\:\d\d$/.test(rawTime)
+            ? rawTime.split(':')
+            : [0, 0];
+    const time = safeTime.map(s => Number(s));
 
-        dateNoTz.setHours(hour);
-        dateNoTz.setMinutes(minutes);
-    } else {
-        dateNoTz.setHours(0);
-        dateNoTz.setMinutes(0);
-    }
+    const datetimeArr = [...date, ...time];
+    const datetimeInTz = moment.tz(datetimeArr, 'Asia/Jerusalem');
 
-    dateNoTz.setSeconds(0, 0);
-
-    // setting correct timezone
-    dateToReturn = moment.tz(dateNoTz, 'Asia/Jerusalem');
-
-    return new Date(dateToReturn.format());
+    return new Date(datetimeInTz.format());
 }
 
 async function getTables(league_id, season_id, round_id) {
