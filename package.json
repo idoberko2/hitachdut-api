@@ -27,7 +27,7 @@
         "graphql": "^14.5.8",
         "graphql-iso-date": "^3.6.1",
         "graphql-tools": "^4.0.5",
-        "moment-timezone": "^0.5.27",
+        "moment-timezone": "^0.5.35",
         "mongodb": "^3.3.2",
         "nodemon": "^1.19.3",
         "winston": "^3.2.1",
